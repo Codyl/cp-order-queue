@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <% include ../partials/header.ejs %>
+</head>
+
+<body>
+
+  <% include ../partials/nav.ejs %>
+
+    <h1 class="center">LTL Queue</h1>
+    <h2 class="center">Full Pallets</h2>
+    <div class="dropdown">
+      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Select mode<i class="fa fa-caret-down" aria-hidden="true"></i>
+      </button>
+      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+        <a class="dropdown-item" href="partials-list">Partials</a>
+        <a class="dropdown-item" href="full-cases-list">Full cases</a>
+        <a class="dropdown-item" href="full-pallets-list">Full pallets</a>
+        <a class="dropdown-item" href="view-only">View only</a>
+      </div>
+    </div>
+    <div class="container" id="filter">
+      <h3>Filter</h3>
+      <p>Order Contains...</p>
+      <input type="checkbox" name="filter" id="partials" value="partials">
+      <label for="partials">partials</label>
+      <input type="checkbox" name="filter" id="full cases" value="full cases">
+      <label for="full_cases">full cases</label><br>
+      <input type="checkbox" name="filter" id="full pallets" value="full pallets">
+      <label for="full pallets">full pallets</label>
+      <input type="checkbox" name="filter" id="transfers" value="transfers">
+      <label for="transfers">transfers</label><br>
+
+    </div><br>
+<div class="container">
+  <a data-toggle="collapse" href="#orderToggle" role="button" aria-expanded="false" aria-controls="orderToggle">
+    <div class="order">
+      <span>Order #1387676</span>
+      <span>Needs pulled: cases</span>
+      <span>YRC</span>
+    </div>
+  </a>
+  <div id="orderToggle">
+    <table id="itemsTable">
+      <tbody>
+        <tr>
+          <th>Bin</th>
+          <th>Item</th>
+          <th>Pallets</th>
+          <th>Case pack <br>Cases per plt</th>
+          <th>QOH</th>
+        </tr>
+        <tr>
+          <td>
+            <div>Pri: A:1:1:1</div>
+            <div>Pick: </div>
+          </td>
+          <td>J071CL</td>
+          <td><input type="number" name="cases" class="cases" max="5">/5</td>
+          <td>
+            <span>400</span> <input type="radio" name="matchPack" id=""><label for="">Matches</label><br>
+            <span>4</span> <input type="radio" name="matchPlt" id=""><label for="">Matches</label>
+            
+          </td>
+          <td>NA<i class="fa fa-check-circle-o fa-2x" aria-hidden="true"></i></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  </div>
+</body>
+</html>
