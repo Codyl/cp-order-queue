@@ -13,15 +13,45 @@
     margin: 1em auto 2em; }
   .navbar + .jumbotron {
     margin-top: -20px; }
-  .jumbotron .lang-logo {
-    display: block;
-    background: #B01302;
-    border-radius: 50%;
-    overflow: hidden;
-    width: 100px;
-    height: 100px;
-    margin: auto;
-    border: 2px solid white; }
-    .jumbotron .lang-logo img {
-      max-width: 100%; }
+.logo {
+  display: block;
+  float: left;
+  
+  width: 200px;
+  height: 100px;
+}
+#itemsTable {
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 10px;
+}
 
+#itemsTable tr {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+#itemsTable tr:nth-child(even){background-color: #f2f2f2;}
+
+#itemsTable tr:hover {background-color: #ddd;}
+
+#itemsTable th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+}
+.fa {
+  float: right;
+}
+.cases {
+  width: 40px;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.order {
+  background-color: red;
+}
