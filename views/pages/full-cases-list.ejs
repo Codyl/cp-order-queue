@@ -26,7 +26,7 @@
       <p>Order Contains...</p>
       <input type="checkbox" name="filter" id="partials" value="partials">
       <label for="partials">partials</label>
-      <input type="checkbox" name="filter" id="full cases" value="full cases">
+      <input type="checkbox" name="filter" id="full cases" value="full cases" checked disabled>
       <label for="full_cases">full cases</label><br>
       <input type="checkbox" name="filter" id="full pallets" value="full pallets">
       <label for="full pallets">full pallets</label>
@@ -34,6 +34,7 @@
       <label for="transfers">transfers</label><br>
 
     </div><br>
+    <p>Displaying first 15 orders</p>
 <div class="container">
   <a data-toggle="collapse" href="#orderToggle" role="button" aria-expanded="false" aria-controls="orderToggle">
     <div class="order">
@@ -54,13 +55,13 @@
         </tr>
         <tr>
           <td>
-            <div>Pri: A:1:1:1</div>
-            <div>Pick: </div>
+            <div id="JO71CL_Pri">Pri: A:1:1:1</div>
+            <div id="JO71CL_Pick">Pick: </div>
           </td>
-          <td>J071CL</td>
+          <td id="JO71CL">J071CL</td>
           <td><input type="number" name="cases" class="cases" max="5">/5</td>
-          <td>400</td>
-          <td>NA<i class="fa fa-check-circle-o fa-2x" aria-hidden="true"></i></td>
+          <td id="J071CL_cases-qty">400</td>
+          <td id="J071CL_q-avail">NA<i class="fa fa-check-circle-o fa-2x" aria-hidden="true"></i></td>
         </tr>
       </tbody>
     </table>

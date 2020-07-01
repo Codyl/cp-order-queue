@@ -44,6 +44,9 @@
 .fa {
   float: right;
 }
+.fa:hover {
+  cursor: pointer;
+}
 .cases {
   width: 40px;
 }
