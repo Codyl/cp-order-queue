@@ -70,3 +70,17 @@ input::-webkit-inner-spin-button {
 .center {
   text-align: center;
 }
+.order  {
+  text-decoration: none;
+  color: white;
+  font-size: 20px;
+}
+#distribution {
+  width: 200px;
+  position: absolute;
+  top: 40px;
+  left: 10px;
+}
+partials,pallets,cases {
+  display: block;
+}

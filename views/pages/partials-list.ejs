@@ -1,39 +1,4 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <% include ../partials/header.ejs %>
-</head>
 
-<body>
-
-  <% include ../partials/nav.ejs %>
-
-    <h1 class="center">LTL Queue</h1>
-    <h2 class="center">Partials</h2>
-    <div class="dropdown">
-      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        Select mode<i class="fa fa-caret-down" aria-hidden="true"></i>
-      </button>
-      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-        <a class="dropdown-item" href="partials-list">Partials</a>
-        <a class="dropdown-item" href="full-cases-list">Full cases</a>
-        <a class="dropdown-item" href="full-pallets-list">Full pallets</a>
-        <a class="dropdown-item" href="view-only">View only</a>
-      </div>
-    </div>
-    <div class="container" id="filter">
-      <h3>Filter</h3>
-      <p>Order Contains...</p>
-      <input type="checkbox" name="filter" id="partials" value="partials">
-      <label for="partials">partials</label>
-      <input type="checkbox" name="filter" id="full cases" value="full cases">
-      <label for="full_cases">full cases</label><br>
-      <input type="checkbox" name="filter" id="full pallets" value="full pallets">
-      <label for="full pallets">full pallets</label>
-      <input type="checkbox" name="filter" id="transfers" value="transfers">
-      <label for="transfers">transfers</label><br>
-
-    </div><br>
 <div class="container">
   <a data-toggle="collapse" href="#orderToggle" role="button" aria-expanded="false" aria-controls="orderToggle">
     <div class="order">
@@ -65,6 +30,4 @@
       </tbody>
     </table>
   </div>
-  </div>
-</body>
-</html>
+</div>

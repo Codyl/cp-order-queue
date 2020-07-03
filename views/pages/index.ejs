@@ -8,27 +8,60 @@
 
   <% include ../partials/nav.ejs %>
 
-    <h1 class="center">LTL Queue</h1>
-    <h2 class="center">Home</h2>
-    <div class="dropdown">
-      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        Select mode<i class="fa fa-caret-down" aria-hidden="true"></i>
-      </button>
-      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-        <a class="dropdown-item" href="partials-list">Partials</a>
-        <a class="dropdown-item" href="full-cases-list">Full cases</a>
-        <a class="dropdown-item" href="full-pallets-list">Full pallets</a>
-        <a class="dropdown-item" href="view-only">View only</a>
-      </div>
+  <h1 class="center">LTL Queue</h1>
+  <h2 class="center" id="title">Home</h2>
+  <div class="container" id="distribution">
+    <div class="card, bg-info">
+      <h3>LTL distribution</h3>
+      <h4>Crew pulling...</h4>
+      <partials>Partials: <span></span></partials>
+      <cases>Cases: <span>Cody</span></cases>
+      <pallets>Pallets: <span></span></pallets>
     </div>
-<p>Welcome to the less than truckload shipping page! To begin please choose a mode from the drop down. You will then be able to indicate when you have grabbed the appropriate items from stock to send out to the clients.</p>
-<div class="card card-body">
-  Updates:
-  <ul>
-    <li>Basic layout</li>
-    <li>can select pages</li>
-    <li>Full cases displays orders</li>
-  </ul>
-</div>
+  </div>
+  <br>
+  <div class="dropdown">
+    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      Select mode<i class="fa fa-caret-down" aria-hidden="true"></i>
+    </button>
+    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+      <button class="dropdown-item" onclick='populateMain("partials-list","Partials")'>Partials</button>
+      <button class="dropdown-item" onclick='populateMain("full-cases-list","Full Cases")'>Full cases</button>
+      <button class="dropdown-item" onclick='populateMain("full-pallets-list", "Full Pallets")'>Full pallets</button>
+      <button class="dropdown-item" onclick='populateMain("view-only", "View")'>View only</button>
+    </div>
+  </div>
+
+  </div>
+  <div class="container" id="filter">
+    <h3>Filter</h3>
+    <p>Orders must Contain...</p>
+    <input type="checkbox" name="filter" id="partials" value="partials">
+    <label for="partials">partials</label>
+    <input type="checkbox" name="filter" id="full cases" value="full cases">
+    <label for="full_cases">full cases</label><br>
+    <input type="checkbox" name="filter" id="full pallets" value="full pallets">
+    <label for="full pallets">full pallets</label>
+    <input type="checkbox" name="filter" id="transfers" value="transfers">
+    <label for="transfers">transfers</label><br>
+
+  </div><br>
+  <div id="stats">
+    <!-- <span>Orders waiting for truck: </span> -->
+    <span>Orders ready to combine: 0</span>
+    <span>Orders to pull remaining: 1</span>
+    <span>Downloaded: 1</span>
+  </div>
+  <main id="main">
+    <p>Welcome to the less than truckload shipping page! To begin please choose a mode from the drop down. You will then be able to indicate when you have grabbed the appropriate items from stock to send out to the clients.</p>
+  <div class="card card-body">
+    Updates:
+    <ul>
+      <li>Case list pulls from database</li>
+      <li>UI</li>
+      <li>use POST</li>
+    </ul>
+  </main>
+
 </body>
 </html>
