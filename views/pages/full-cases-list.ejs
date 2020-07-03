@@ -1,53 +1,51 @@
 
 <p>Displaying first 15 orders</p>
 <!-- For each order make a table -->
-<% for(order of orders) { %>
 <div class="container">
   <a data-toggle="collapse" href="#orderToggle" role="button" aria-expanded="false" aria-controls="orderToggle">
     <div class="order">
-      <span id='salesOrder'>Order #<%= order.order_id %></span>
+      <span id='salesOrder'>Order #<%= myData[0].order_id %></span>
       <span id='priority' style='float: right'>Priority 1</span><br>
       <span id='truck'>YRC</span>
       <span id='need' style='float: right'>Needs pulled: cases</span>
     </div>
   </a>
   <div id="orderToggle">
-    <table id='<%= order.order_id %>_orderTable'>
+    <table id="itemsTable">
       <tbody>
-        <tr id='<%= order.order_id %>_orderTableHeader'>
+        <tr>
           <th>Bin</th>
           <th>Item</th>
           <th>Cases</th>
           <th>Case pack</th>
           <th>QOH</th>
         </tr>
-        <% for (item in order) { %>
-          <tr id='<%= item.name %>' 
-            onload="setRowData('<%= item.item_id %>','<%= order.order_id %>')">
-            <td id='<%= item.name %>_binInfo'>
-              <span id='<%= item.name %>_Pri'>
-                <% if(typeof myWBin.name !== 'undefined') { %>
+        <% for (let i = 0;i < myData.length;i++) { %>
+          <tr>
+            <td >
+              <span id='<%= myData[i].name %>_Pri'>
+                <% if(typeof myWBin[i].name !== 'undefined') { %>
                 Pri: <%= myWBin[i].name %>
                 <% } %>
               </span><br>
-              <span id='<%= item.name %>_Pick'>
+              <span id='<%= myData[i].name %>_Pick'>
                 <% if(typeof myPickBin[i].name !== 'undefined') { %>
                 Pick: <%= myPickBin[i].name %>
                 <% } %>
               </span>
             </td>
-            <td id='<%= item.name %>_name'>
-              <%= item.name %>
+            <td id='<%= myData[i].name %>_name'>
+              <%= myData[i].name %>
               <!-- <input type='text' value=''> /<%#= "5" %> -->
             </td>
-            <td id='<%= item.name %>_cases'>
-              <input type='number' class='cases' value=''>/<%= item.cs_qty %>
+            <td id='<%= myData[i].name %>_cases'>
+              <input type='number' class='cases' value=''>/<%= myData[i].cs_qty %>
             </td>
             <td id='<%= myData.name %>_cs_qty'>
-              <%= item.case_qty %>
+              <%= myData[i].case_qty %>
             </td>
-            <td id='<%= item.name %>_qty_avail'>
-              <%= item.qty_avail %>
+            <td id='<%= myData[i].name %>_qty_avail'>
+              <%= myData[i].qty_avail %>
               <i class="fa fa-check-circle-o fa-2x" aria-hidden="true"
                 onclick="deleteOrder('<%= `1` // myData %>')">
             </i>
@@ -57,6 +55,5 @@
         <% } %>
       </tbody>
     </table>
-    <% } %>
   </div>
 </div>
