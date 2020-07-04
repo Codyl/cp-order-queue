@@ -18,7 +18,7 @@
           <th>Item</th>
           <th>Cases</th>
           <th>Case pack</th>
-          <th>QOH</th>
+          <th>Qty available</th>
         </tr>
         <% for (let i = 0;i < myData.length;i++) { %>
           <tr>
@@ -42,7 +42,7 @@
               <input type='number' class='cases' value=''>/<%= myData[i].cs_qty %>
             </td>
             <td id='<%= myData.name %>_cs_qty'>
-              <%= myData[i].case_qty %>
+              <%= myData[i].case_qty %>  <input type="checkbox" name="matchPack" ><label>Matches</label>
             </td>
             <td id='<%= myData[i].name %>_qty_avail'>
               <%= myData[i].qty_avail %>
