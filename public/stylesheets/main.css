@@ -20,7 +20,10 @@
   width: 100px;
   height: 50px;
 }
-#itemsTable {
+.container {
+  margin: 10px;
+}
+[id$="_orderTable"] {
   font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
   border-collapse: collapse;
   width: 100%;

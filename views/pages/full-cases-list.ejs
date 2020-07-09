@@ -3,7 +3,7 @@
 <!-- For each order make a table -->
 <% for(order of orders) { %>
 <div class="container">
-  <a data-toggle="collapse" href="#orderToggle" role="button" aria-expanded="false" aria-controls="orderToggle">
+  <a data-toggle="collapse" href="#<%= order.order_id %>_orderToggle" role="button" aria-expanded="true" aria-controls="orderToggle">
     <div class="order">
       <span id='salesOrder'>Order #<%= order.order_id %></span>
       <span id='priority' style='float: right'>Priority 1</span><br>
@@ -11,7 +11,7 @@
       <span id='need' style='float: right'>Needs pulled: cases</span>
     </div>
   </a>
-  <div id="orderToggle">
+  <div id="<%= order.order_id %>_orderToggle">
     <table id='<%= order.order_id %>_orderTable'>
       <tbody>
         <tr id='<%= order.order_id %>_orderTableHeader'>
@@ -21,33 +21,33 @@
           <th>Case pack</th>
           <th>QOH</th>
         </tr>
-        <% for (item in order) { %>
-          <tr id='<%= item.name %>' 
-            onload="setRowData('<%= item.item_id %>','<%= order.order_id %>')">
-            <td id='<%= item.name %>_binInfo'>
-              <span id='<%= item.name %>_Pri'>
-                <% if(typeof myWBin.name !== 'undefined') { %>
-                Pri: <%= myWBin[i].name %>
-                <% } %>
+        <% for (const lineItem of order.lineItems) { %>
+          <tr id='<%= lineItem.invItem.name %>'
+            onload="//setRowData('<%#= lineItem.item_id %>','<%#= order.order_id %>')">
+            <td id='<%= lineItem.invItem.name %>_binInfo'>
+              <span id='<%= lineItem.invItem.name %>_Pri'>
+                <%# if(typeof wBin.name !== 'undefined') { %>
+                Pri: <%= lineItem.invItem.primary_bin %>
+                <%# } %>
               </span><br>
-              <span id='<%= item.name %>_Pick'>
-                <% if(typeof myPickBin[i].name !== 'undefined') { %>
-                Pick: <%= myPickBin[i].name %>
-                <% } %>
+              <span id='<%= lineItem.invItem.name %>_Pick'>
+                <%# if(typeof pickBin[i].name !== 'undefined') { %>
+                Pick: <%= lineItem.invItem.pick_bin %>
+                <%# } %>
               </span>
             </td>
-            <td id='<%= item.name %>_name'>
-              <%= item.name %>
+            <td id='<%= lineItem.invItem.name %>_name'>
+              <%= lineItem.invItem.name %>
               <!-- <input type='text' value=''> /<%#= "5" %> -->
             </td>
-            <td id='<%= item.name %>_cases'>
-              <input type='number' class='cases' value=''>/<%= item.cs_qty %>
+            <td id='<%= lineItem.invItem.name %>_cases'>
+              <input type='number' class='cases' value=''>/<%= lineItem.cs_qty %>
             </td>
-            <td id='<%= myData.name %>_cs_qty'>
-              <%= item.case_qty %>
+            <td id='<%= lineItem.invItem.name %>_cs_qty'>
+              <%= lineItem.invItem.case_qty %>
             </td>
-            <td id='<%= item.name %>_qty_avail'>
-              <%= item.qty_avail %>
+            <td id='<%= lineItem.invItem.name %>_qty_avail'>
+              <%= lineItem.invItem.qty_avail %>
               <i class="fa fa-check-circle-o fa-2x" aria-hidden="true"
                 onclick="deleteOrder('<%= `1` // myData %>')">
             </i>
@@ -57,6 +57,6 @@
         <% } %>
       </tbody>
     </table>
-    <% } %>
   </div>
 </div>
+<% } %>

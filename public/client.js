@@ -82,16 +82,16 @@ function deleteOrder(order_id) {
   })
 }
 
-function setRowData(item_id,order_id) {
-    //Get primary bin by item_id
-    requestResource('GET', 'primaryBinForItem/' + item_id,
-       /* body= */ null, function(item_id){})
-    //Get pick_bin by item_id
-    requestResource('GET', 'pickBinForItem/' + item_id,
-       /* body= */ null, getPickBin(item_id))
+// function setRowData(item_id,order_id) {
+//     //Get primary bin by item_id
+//     requestResource('GET', 'primaryBinForItem/' + item_id,
+//        /* body= */ null, function(item_id){})
+//     //Get pick_bin by item_id
+//     requestResource('GET', 'pickBinForItem/' + item_id,
+//        /* body= */ null, getPickBin(item_id))
     
-    //Get item/order information ie case pack and requested case amount
-    requestResource('GET', 'rowInfoByOrder/' + order_id,
-       /* body= */ null, getRowDetails(item_id,order_id))
+//     //Get item/order information ie case pack and requested case amount
+//     requestResource('GET', 'rowInfoByOrder/' + order_id,
+//        /* body= */ null, getRowDetails(item_id,order_id))
     
-}
+// }
