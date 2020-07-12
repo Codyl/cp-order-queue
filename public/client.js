@@ -28,7 +28,7 @@ function requestResource(method, url, body = null, callback) {
     throw Error("Network response was not OK");
   })
   .then(function (data) {
-    console.log(data);
+    //console.log(data);
     callback(data);
   })
   .catch(function (error) {
@@ -42,26 +42,7 @@ function populateMain(tableName, title) {
       document.getElementById('main').innerHTML = tableData;
       document.getElementById('title').innerHTML = title;
       //Set filter based on list title
-      switch(title) {
-        case "Partials":
-            clearFilter();
-            document.getElementById("partials").checked = true;
-            document.getElementById("partials").disabled = true;
-            break;
-        case "Full Cases":
-            clearFilter();
-            document.getElementById("full cases").checked = true;
-            document.getElementById("full cases").disabled = true;
-            break;
-        case "Full Pallets":
-            clearFilter();
-            document.getElementById("full pallets").checked = true;
-            document.getElementById("full pallets").disabled = true;
-            break;
-        default:
-            clearFilter();
-
-      }
+      setFilter(title);
   })
 
   function clearFilter(){
@@ -74,6 +55,33 @@ function populateMain(tableName, title) {
     document.getElementById("full cases").disabled = false;
     document.getElementById("full pallets").disabled = false;
   }
+  function setFilter(title) {
+    var filter = "";
+    switch(title) {
+      case "Partials":
+          clearFilter();
+          document.getElementById("partials").checked = true;
+          document.getElementById("partials").disabled = true;
+          filter += 'AND io.pc_qty > 0';
+          break;
+      case "Full Cases":
+          clearFilter();
+          document.getElementById("full cases").checked = true;
+          document.getElementById("full cases").disabled = true;
+          filter += 'AND io.cs_qty > 0';
+          break;
+      case "Full Pallets":
+          clearFilter();
+          document.getElementById("full pallets").checked = true;
+          document.getElementById("full pallets").disabled = true;
+          filter += 'AND io.plt_qty > 0';
+          break;
+      default:
+          clearFilter();
+
+    }
+    return filter;
+  }
 }
 
 function deleteOrder(order_id) {
@@ -81,17 +89,14 @@ function deleteOrder(order_id) {
     // handle result
   })
 }
-
-// function setRowData(item_id,order_id) {
-//     //Get primary bin by item_id
-//     requestResource('GET', 'primaryBinForItem/' + item_id,
-//        /* body= */ null, function(item_id){})
-//     //Get pick_bin by item_id
-//     requestResource('GET', 'pickBinForItem/' + item_id,
-//        /* body= */ null, getPickBin(item_id))
-    
-//     //Get item/order information ie case pack and requested case amount
-//     requestResource('GET', 'rowInfoByOrder/' + order_id,
-//        /* body= */ null, getRowDetails(item_id,order_id))
-    
-// }
+function updateOrder(order_id,expectedQty) {
+    let amount = parseInt(document.getElementById(itemName+'_cs_pack').innerText) * parseInt(document.getElementById(itemName+'_cases').innerText);
+    if(amount == expectedQty) {
+        requestResource('PATCH', 'updateOrder/' + order_id, /* body= */ null, function(data) {
+          // handle result
+        });
+    }
+    else {
+        alert(`Warning! Your Amount: ${amount} Expected quantity: ${expectedQty}. Are you sure you want to place this order on hold?`);
+    }
+  }

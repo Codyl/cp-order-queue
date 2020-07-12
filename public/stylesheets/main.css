@@ -20,7 +20,7 @@
   width: 100px;
   height: 50px;
 }
-.container {
+.card {
   margin: 10px;
 }
 [id$="_orderTable"] {
@@ -30,16 +30,16 @@
   font-size: 10px;
 }
 
-#itemsTable tr {
+[id$="_orderTable"] tr {
   border: 1px solid #ddd;
   padding: 8px;
 }
 
-#itemsTable tr:nth-child(even){background-color: #f2f2f2;}
+[id$="_orderTable"] tr:nth-child(even){background-color: #f2f2f2;}
 
-#itemsTable tr:hover {background-color: #ddd;}
+[id$="_orderTable"] tr:hover {background-color: #ddd;}
 
-#itemsTable th {
+[id$="_orderTable"] th {
   padding-top: 12px;
   padding-bottom: 12px;
   text-align: left;
@@ -50,7 +50,7 @@
 .fa:hover {
   cursor: pointer;
 }
-.cases {
+.smallInput {
   width: 40px;
 }
 input::-webkit-outer-spin-button,
@@ -58,8 +58,11 @@ input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
-.order {
+[class$="_order"] {
   background-color: red;
+  text-decoration: none;
+  color: white;
+  font-size: 20px;
 }
 #filter {
   background-color: gray;
@@ -73,11 +76,7 @@ input::-webkit-inner-spin-button {
 .center {
   text-align: center;
 }
-.order  {
-  text-decoration: none;
-  color: white;
-  font-size: 20px;
-}
+
 #distribution {
   width: 200px;
   position: absolute;
@@ -87,3 +86,5 @@ input::-webkit-inner-spin-button {
 partials,pallets,cases {
   display: block;
 }
+.grayBG {border: none;}
+.grayBG:nth-child(even){background-color: #f2f2f2;}

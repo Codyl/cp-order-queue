@@ -1,32 +1,76 @@
-<div class="container">
-  <a data-toggle="collapse" href="#orderToggle" role="button" aria-expanded="false" aria-controls="orderToggle">
-    <div class="order">
-      <span>Order #1387676</span>
-      <span>Needs pulled: cases</span>
-      <span>YRC</span>
-    </div>
-  </a>
-  <div id="orderToggle">
-    <table id="itemsTable">
+
+<p>Displaying first 15 orders</p>
+<!-- For each order make a table -->
+<div id='accordion'>
+<% for(order of orders) { %>
+<div class="card">
+  <div class='card-header' id='<%= order.order_id %>_heading'>
+    <a  data-toggle="collapse" href="#<%= order.order_id %>_orderToggle" data-target="#<%= order.order_id %>_orderToggle"
+    role="button" aria-expanded="<% if(order.order_id !== 1) {%>false<% } %>" aria-controls="<%= order.order_id %>_heading" >
+      <div class="<%= order.order_id %>_order"> 
+        <span id='<%= order.order_id %>_salesOrder'>Order #<%= order.order_id %></span>
+        <span id='<%= order.order_id %>_priority' style='float: right'>Priority 1</span><br>
+        <span id='<%= order.order_id %>_truck'>YRC</span>
+        <span id='<%= order.order_id %>_need' style='float: right'>Needs pulled: cases</span>
+      </div>
+    </a>
+  </div>
+<div id="<%= order.order_id %>_orderToggle" class='collapse' aria-labelledby="<%= order.order_id %>_heading" data-parent="#accordion">
+    <div class='card-body'>
+    <table id='<%= order.order_id %>_orderTable'>
       <tbody>
-        <tr>
+        <tr id='<%= order.order_id %>_orderTableHeader'>
           <th>Bin</th>
           <th>Item</th>
-          <th>Cases</th>
+          <th>amount</th>
           <th>Case pack</th>
-          <th>QOH</th>
+          <th>Qty available</th>
         </tr>
-        <tr>
-          <td>
-            <div>Pri: A:1:1:1</div>
-            <div>Pick: </div>
-          </td>
-          <td>J071CL</td>
-          <td><input type="number" name="cases" class="cases" max="5" disabled>/5</td>
-          <td>400</td>
-          <td>NA<i class="fa" aria-hidden="true">View only!</i></td>
-        </tr>
+        <% for (const lineItem of order.lineItems) { %>
+          <% if(lineItem.invItem) { %> 
+          <tr id='<%= lineItem.invItem.name %>'
+            onload="//setRowData('<%#= lineItem.item_id %>','<%#= order.order_id %>')">
+            <td id='<%= lineItem.invItem.name %>_binInfo'>
+              <span id='<%= lineItem.invItem.name %>_Pri'>
+                <%# if(typeof wBin.name !== 'undefined') { %>
+                Pri: <%= lineItem.invItem.primary_bin %>
+                <%# } %>
+              </span><br>
+              <span id='<%= lineItem.invItem.name %>_Pick'>
+                <%# if(typeof pickBin[i].name !== 'undefined') { %>
+                Pick: <%= lineItem.invItem.pick_bin %>
+                <%# } %>
+              </span>
+            </td>
+            <td id='<%= lineItem.invItem.name %>_name'>
+              <%= lineItem.invItem.name %>
+              <!-- <input type='text' value=''> /<%#= "5" %> -->
+            </td>
+            <td id='<%= lineItem.invItem.name %>_cases'>
+              <% if(lineItem.pc_qty > 0) { %> 
+              <input type='number' class='cases' value='' disabled>/<%= lineItem.pc_qty %> pc<br><% } %> 
+              <% if(lineItem.cs_qty > 0) { %> 
+              <input type='number' class='cases' value='' disabled>/<%= lineItem.cs_qty %> cs<br><% } %>
+              <% if(lineItem.plt_qty > 0) { %> 
+              <input type='number' class='cases' value='' disabled>/<%= lineItem.plt_qty %> plt<% } %>
+            </td>
+            <td id='<%= lineItem.invItem.name %>_cs_qty'>
+              <%= lineItem.invItem.case_qty %>
+            </td>
+            <td id='<%= lineItem.invItem.name %>_qty_avail'>
+              <i class="fa" aria-hidden="true">View only!</i>
+            </td>
+            
+          </tr>
+        <% } %>
+        <script>
+          document.getElementById('<%= order.order_id %>_orderToggle').class='collapse hide';
+        </script>
+        <% } %>
       </tbody>
-    </table>
+    </table> <!-- End orderTable -->
   </div>
-</div>
+  </div> <!-- End orderToggle -->
+</div> <!--End card-->
+<% } %>
+</div> <!--End accordion-->
