@@ -119,7 +119,7 @@ CREATE TABLE customers(
     zip int NOT NULL,
     city varchar NOT NULL
 );
--- Statuses: fully pulled, part pulled, combined, in truck, arrived, accepted
+-- Statuses: fully pulled, part pulled, combined, in truck, arrived, accepted, on hold, returned
 DROP TABLE IF EXISTS orders cascade;
 CREATE TABLE orders(
     order_id SERIAL PRIMARY KEY,
@@ -130,6 +130,7 @@ CREATE TABLE orders(
     CONSTRAINT fk_customer_id FOREIGN KEY (customer_id) REFERENCES customers (customer_id)
 );
 
+--status codes: waiting,pulled, hold, returned
 DROP TABLE IF EXISTS itemsOrders cascade;
 CREATE TABLE itemsOrders(
     items_orders_id SERIAL PRIMARY KEY,
@@ -139,6 +140,7 @@ CREATE TABLE itemsOrders(
     cs_qty int NOT NULL,
     plt_qty int NOT NULL,
     warehouse_id int NOT NULL,
+    status varchar,
     CONSTRAINT fk_warehouse_id FOREIGN KEY (warehouse_id) REFERENCES warehouses (warehouse_id),
     CONSTRAINT fk_item_id FOREIGN KEY (item_id) REFERENCES items (item_id),
     CONSTRAINT fk_order_id FOREIGN KEY (order_id) REFERENCES orders (order_id)
@@ -232,3 +234,8 @@ VALUES
 (2,14,0,1),
 (3,15,0,1),
 (4,16,0,1);
+
+/*Example orders*/
+--order 3
+INSERT into orders values (3,2,'2020-07-04');
+INSERT into itemsorders values (4,3,3,100,0,0,1),(5,1,3,0,15,0,1),(6,4,3,155,0,0,1);
