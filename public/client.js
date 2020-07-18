@@ -38,11 +38,12 @@ function requestResource(method, url, body = null, callback) {
 
 
 function populateMain(tableName, title) {
-  requestResource('GET', tableName, /* body= */ null, function(tableData) {
+  let filter = setFilter(title);
+  requestResource('GET', tableName + '/'+filter, /* body= */ null, function(tableData) {
       document.getElementById('main').innerHTML = tableData;
       document.getElementById('title').innerHTML = title;
       //Set filter based on list title
-      setFilter(title);
+      
   })
 
   function clearFilter(){
@@ -56,7 +57,7 @@ function populateMain(tableName, title) {
     document.getElementById("full pallets").disabled = false;
   }
   function setFilter(title) {
-    var filter = "";
+    let filter = "";
     switch(title) {
       case "Partials":
           clearFilter();
@@ -89,14 +90,29 @@ function deleteOrder(order_id) {
     // handle result
   })
 }
-function updateOrder(order_id,expectedQty) {
-    let amount = parseInt(document.getElementById(itemName+'_cs_pack').innerText) * parseInt(document.getElementById(itemName+'_cases').innerText);
-    if(amount == expectedQty) {
-        requestResource('PATCH', 'updateOrder/' + order_id, /* body= */ null, function(data) {
-          // handle result
-        });
+
+function updateOrder(order_id,itemName,item_id,casePack) {
+    let amount = parseInt(document.getElementById(itemName+'_cs_pack').value) * parseInt(document.getElementById(order_id+'-'+itemName+'_cases').value);
+    let expectedAmount = parseInt(document.getElementById(order_id+'-'+itemName+'_casesExpected').innerText)*casePack;
+    if(amount == expectedAmount) {
+      
+      requestResource('PUT', 'updateOrder/' + order_id+'/'+item_id, /* body= */ null, function(data) {
+        // handle result
+        document.getElementById(order_id+'-'+itemName+'_row').remove();
+        document.getElementById('ready').innerText = Number(document.getElementById('ready').innerText)+1; 
+        if(document.getElementById(order_id+'_orderTable').rows.length === 1) {
+          //remove table
+          document.getElementById(order_id+"_card").remove();
+          requestResource('PUT', 'updateOrder/' + order_id, null, function(data){
+    //update orders to be combined
+          })
+        }
+      });
     }
     else {
-        alert(`Warning! Your Amount: ${amount} Expected quantity: ${expectedQty}. Are you sure you want to place this order on hold?`);
+        if(confirm(`Warning! Your Amount: ${amount} Expected quantity: ${expectedAmount}. Are you sure you want to place this order on hold?`)) {
+          //email notification
+        }
     }
+
   }

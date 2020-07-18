@@ -2,18 +2,18 @@
 
 <p>Displaying first 15 orders</p>
 <!-- For each order make a table -->
-<div id='accordion'>
+<div class='panel-group' id='accordion'>
 <% for (const order of orders) { %>
   <% if (order.hasPallet) { %>
-  <div class="card">
-    <div class='card-header' id='<%= order.order_id %>_heading'>
+    <div class="panel panel-default" id='<%= order.order_id %>_card' onclick="document.getElementById('<%= order.order_id %>_lock').style.display = 'inline'">
+      <div class='card-header' id='<%= order.order_id %>_heading'>
       <a  data-toggle="collapse" href="#<%= order.order_id %>_orderToggle" data-target="#<%= order.order_id %>_orderToggle"
       role="button" aria-expanded="<% if(order.order_id !== 1) {%>false<% } %>" aria-controls="<%= order.order_id %>_heading" >
         <div class="<%= order.order_id %>_order"> 
           <span id='<%= order.order_id %>_salesOrder'>Order #<%= order.order_id %></span>
-          <span id='<%= order.order_id %>_priority' style='float: right'>Priority 1</span><br>
-          <span id='<%= order.order_id %>_truck'>YRC</span>
-          <span id='<%= order.order_id %>_need' style='float: right'>Needs pulled: cases</span>
+          <span id='<%= order.order_id %>_priority' style='float: right'>Priority <%= order.priority %></span><br>
+          <span id='<%= order.order_id %>_truck'><%= order.truck %></span>
+          <span id='<%= order.order_id %>_need' style='float: right'>Needs pulled: </span>
         </div>
       </a>
     </div>
@@ -30,40 +30,33 @@
             </tr>
             <% for (const lineItem of order.lineItems) { %>
               <% if (lineItem.invItem) { %>
-                <tr id='<%= lineItem.invItem.name %>'
-                  onload="//setRowData('<%#= lineItem.item_id %>','<%#= order.order_id %>')">
+                <tr id='<%= lineItem.invItem.name %>'>
                   <td id='<%= lineItem.invItem.name %>_binInfo'>
                     <span id='<%= lineItem.invItem.name %>_Pri'>
-                      <%# if(typeof wBin.name !== 'undefined') { %>
                       Pri: <%= lineItem.invItem.primary_bin %>
-                      <%# } %>
                     </span><br>
                     <span id='<%= lineItem.invItem.name %>_Pick'>
-                      <%# if(typeof pickBin[i].name !== 'undefined') { %>
                       Pick: <%= lineItem.invItem.pick_bin %>
-                      <%# } %>
                     </span>
                   </td>
                   <td id='<%= lineItem.invItem.name %>_name'>
                     <%= lineItem.invItem.name %>
-                    <!-- <input type='text' value=''> /<%#= "5" %> -->
                   </td>
                   <td id='<%= lineItem.invItem.name %>_pallets'>
                     <input type='number' class='cases' value=''>/<%= lineItem.plt_qty %>
                   </td>
                   <td id='<%= lineItem.invItem.name %>_cs_qty'>
-                    <input type="number" name="casePack" class="smallInput grayBG" id='<%= lineItem.invItem.name %>_cs_qty'
-                        placeholder="<%= lineItem.invItem.case_qty %>"> pc<br>
+                    <input type="number" name="casePack" class="smallInput grayBG" id='<%= lineItem.invItem.name %>_cs_pack'
+                        value="<%= lineItem.invItem.case_qty %>"> pc<br>
                     <input type="number" name="casePack" class="smallInput grayBG" id='<%= lineItem.invItem.name %>_cs_plt'
-                        placeholder="<%= lineItem.invItem.case_plt %>"> plt
+                        value="<%= lineItem.invItem.case_plt %>"> plt
                   </td>
                   <td id='<%= lineItem.invItem.name %>_qty_avail'>
                     <%= lineItem.invItem.qty_avail %>
                     <i class="fa fa-check-circle-o fa-2x" aria-hidden="true"
-                      onclick="deleteOrder('<%= `1` // myData %>')">
+                    onclick="updateOrder('<%= order.order_id %>','<%= lineItem.invItem.name %>','<%= lineItem.invItem.item_id %>','<%= lineItem.invItem.case_qty %>')">
                   </i>
                   </td>
-                  
                 </tr>
               <% } %>
             <% } %>

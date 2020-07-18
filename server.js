@@ -19,8 +19,8 @@ app.set('view engine', 'ejs');
 app.get('/', (req, res) => res.render('pages/index'));
 app.listen(PORT, () => console.log(`Listening on ${ PORT }`));
 
-app.get('/full-pallets-list/', function(req, res) {
-  const queryOrders = `SELECT order_id FROM orders`; // gets an array of orders
+app.get('/full-pallets-list/:filter', function(req, res) {
+  const queryOrders = `SELECT order_id, truck, priority FROM orders WHERE status='waiting' OR status='incomplete' LIMIT 25`; // gets an array of orders
   pool.query(queryOrders, function(err, orders) {
     // console.log("orders:", err, orders.rows); // DEBUG
     res.locals.orders = orders.rows;
@@ -79,7 +79,9 @@ app.get('/full-pallets-list/', function(req, res) {
                   AND inv.warehouse_id=1
                 WHERE io.item_id=${lineItem.item_id}
                 AND io.order_id=${orders.rows[iOrder].order_id}
-                AND io.plt_qty > 0`;
+                AND io.plt_qty > 0
+                AND io.status='waiting'
+               ${req.params.filter}`;
 
             pool.query(queryInvItem, function(err, invItem) {
               // console.log("***********items:", err, invItem.rows[0]); // DEBUG
@@ -104,9 +106,9 @@ app.get('/full-pallets-list/', function(req, res) {
 });
 
 //Get the full case version of the same page
-app.get('/full-cases-list/', function(req, res) {
-  
-  const queryOrders = `SELECT order_id FROM orders`; // gets an array of orders
+app.get('/full-cases-list/:filter', function(req, res) {
+  console.log(req.params.filter)
+  const queryOrders = `SELECT order_id, truck, priority FROM orders WHERE status='waiting' OR status='incomplete' LIMIT 25`; // gets an array of orders
   pool.query(queryOrders, function(err, orders) {
     //console.log("orders:", err, orders.rows); // DEBUG
     res.locals.orders = orders.rows;
@@ -160,10 +162,12 @@ app.get('/full-cases-list/', function(req, res) {
                 AND inv.warehouse_id=1
               WHERE io.item_id=${lineItem.item_id}
               AND io.order_id=${orders.rows[iOrder].order_id}
-              AND io.cs_qty > 0`;
+              AND io.cs_qty > 0
+              AND io.status='waiting'
+               ${req.params.filter}`;
 
           pool.query(queryInvItem, function(err, invItem) {
-            console.log("invItem:", err, invItem.rows[0]); // DEBUG
+            //console.log("invItem:", err, invItem.rows[0]); // DEBUG
             if (invItem.rows[0]) {
               res.locals.orders[iOrder].hasCase = true;
               lineItem.invItem = invItem.rows[0];
@@ -180,10 +184,10 @@ app.get('/full-cases-list/', function(req, res) {
   }); // end of queryOrders
 });
 
-app.get('/partials-list/', function(req, res) {
-  const queryOrders = `SELECT order_id FROM orders`; // gets an array of orders
+app.get('/partials-list/:filter', function(req, res) {
+  const queryOrders = `SELECT order_id, truck, priority FROM orders WHERE status='waiting' OR status='incomplete' LIMIT 25`; // gets an array of orders
   pool.query(queryOrders, function(err, orders) {
-    console.log("orders:", err, orders.rows); // DEBUG
+    //console.log("orders:", err, orders.rows); // DEBUG
     res.locals.orders = orders.rows;
 
     let itemsNeeded = null;
@@ -235,7 +239,9 @@ app.get('/partials-list/', function(req, res) {
                 AND inv.warehouse_id=1
               WHERE io.item_id=${lineItem.item_id}
               AND io.order_id=${orders.rows[iOrder].order_id}
-              AND io.pc_qty > 0`;
+              AND io.pc_qty > 0
+              AND io.status='waiting'
+               ${req.params.filter}`;
 
           pool.query(queryInvItem, function(err, invItem) {
             // console.log("items:", err, invItem.rows[0]); // DEBUG
@@ -256,9 +262,10 @@ app.get('/partials-list/', function(req, res) {
 });
 
 app.get('/view-only/', function(req, res) {
-  const queryOrders = `SELECT order_id FROM orders`; // gets an array of orders
+  console.log('entering view')
+  const queryOrders = `SELECT order_id, truck, priority FROM orders WHERE status='waiting' OR status='incomplete' LIMIT 25`; // gets an array of orders
   pool.query(queryOrders, function(err, orders) {
-    console.log("orders:", err, orders.rows); // DEBUG
+    //console.log("orders:", err, orders.rows); // DEBUG
     res.locals.orders = orders.rows;
 
     let itemsNeeded = null;
@@ -266,7 +273,7 @@ app.get('/view-only/', function(req, res) {
     
     //Iterate through active orders for later queries
     for (let iOrder = 0; iOrder < orders.rows.length; iOrder++) {
-      console.log('iOrder: ', iOrder, '\torders.rows[iOrder].order_id: ', orders.rows[iOrder]); // DEBUG
+      // console.log('iOrder: ', iOrder, '\torders.rows[iOrder].order_id: ', orders.rows[iOrder]); // DEBUG
       const queryLineItemsInOrder =
           `SELECT * FROM itemsOrders io
           JOIN orders on orders.order_id = io.order_id
@@ -309,11 +316,16 @@ app.get('/view-only/', function(req, res) {
                 ON inv.item_id=io.item_id
                 AND inv.warehouse_id=1
               WHERE io.item_id=${lineItem.item_id}
-              AND io.order_id=${orders.rows[iOrder].order_id}`;
+              AND io.order_id=${orders.rows[iOrder].order_id}
+              AND io.status='waiting'
+                `;
 
           pool.query(queryInvItem, function(err, invItem) {
-            console.log("items:", err, invItem.rows[0]); // DEBUG
-            lineItem.invItem = invItem.rows[0];
+             console.log("items:", err, invItem.rows[0]); // DEBUG
+            if (invItem.rows[0]) {
+              
+              lineItem.invItem = invItem.rows[0];
+            }
             itemsReturned++;
 
             if (itemsReturned === itemsNeeded) {
@@ -329,7 +341,7 @@ app.get('/view-only/', function(req, res) {
 //sample function for deleting order
 app.delete('/deleteOrder/:order_id', function(req, res) {
   const sql = 'DELETE FROM orders WHERE order_id=$1::int';
-  console.log('req.params.order_id: ', req.params.order_id);
+  // console.log('req.params.order_id: ', req.params.order_id);
   const params = [req.params.order_id];
   
   pool.query(sql, params, function(dbErr, dbRes) {
@@ -346,17 +358,30 @@ app.delete('/deleteOrder/:order_id', function(req, res) {
 app.post("",function() {
 
 });
-app.patch("/updateOrder/:order_id",function(req, res){
-  //If all items on order are indicated pulled update status to fullly pulled otherwise update to partly pulled
-  const sql = "update orders SET status = 'partial pulled' WHERE order_id =$1::int";
-  const params = [req.params.order_id];
-  
+app.put("/updateOrder/:order_id/:item_id",function(req, res){
+  const sql = "update itemsOrders SET status = 'pulled' WHERE order_id =$1::int AND item_id =$2"
+  const params = [req.params.order_id,req.params.item_id];
   pool.query(sql, params, function(dbErr, dbRes) {
-    if (dbRes.status = 'fully pulled') {
-      res.status(200).send('success');
+    if (dbRes.status = 'pulled') {
+      const sql = "update orders SET status = 'incomplete' WHERE order_id =$1::int";
+      const params = [req.params.order_id,req.params.item_id];
+      pool.query(sql, params, function(dbErr, dbRes) {
+        res.status(200).send(dbErr);
+      });
     } else {
       res.status(400).send(dbErr);
     }
   });
 
+});
+app.put("/updateOrder/:order_id",function(req, res){
+  const params = [req.params.order_id];
+  const sql = "update orders SET status = 'pulled' WHERE order_id =$1::int";
+  pool.query(sql, params, function(dbErr, dbRes) {
+    if (dbRes.status = 'pulled') {
+      res.status(200).send(dbErr);
+    } else {
+      res.status(400).send(dbErr);
+    }
+  });
 });

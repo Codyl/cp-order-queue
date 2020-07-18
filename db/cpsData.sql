@@ -3,6 +3,7 @@
 
 --We INSERT our warehouses for Idaho and Kentucky at the bottom
 --Warehouses determine the rows used in other tables ie. bins
+--**********************************TO RUN WHOLE FILE: heroku pg:psql -f db/cpsData.sql
 DROP TABLE IF EXISTS warehouses cascade;
 CREATE TABLE warehouses (
   warehouse_id SERIAL PRIMARY KEY,
@@ -105,7 +106,7 @@ CREATE TABLE inventory(
 ALTER TABLE inventory ALTER COLUMN qoh SET DEFAULT 0;
 ALTER TABLE inventory ALTER COLUMN qty_avail SET DEFAULT 0;
 
-
+--Order related tables start here
 DROP TABLE IF EXISTS customers cascade;
 CREATE TABLE customers(
     customer_id SERIAL PRIMARY KEY,
@@ -119,14 +120,16 @@ CREATE TABLE customers(
     zip int NOT NULL,
     city varchar NOT NULL
 );
--- Statuses: fully pulled, part pulled, combined, in truck, arrived, accepted, on hold, returned
+-- Statuses: waiting, fully pulled, part pulled, combined, in truck, arrived, accepted, on hold, returned
 DROP TABLE IF EXISTS orders cascade;
 CREATE TABLE orders(
     order_id SERIAL PRIMARY KEY,
     customer_id int NOT NULL,
-    status varchar,
-    priority int,
-    date DATE DEFAULT CURRENT_DATE,
+    status varchar DEFAULT 'waiting',
+    priority int DEFAULT 1,
+    truck varchar DEFAULT 'YRC',
+    start_date DATE DEFAULT CURRENT_DATE,
+    end_date DATE DEFAULT CURRENT_DATE+3,
     CONSTRAINT fk_customer_id FOREIGN KEY (customer_id) REFERENCES customers (customer_id)
 );
 
@@ -136,11 +139,11 @@ CREATE TABLE itemsOrders(
     items_orders_id SERIAL PRIMARY KEY,
     item_id int NOT NULL,
     order_id int NOT NULL,
+    status varchar DEFAULT 'waiting',
     pc_qty int NOT NULL,
     cs_qty int NOT NULL,
     plt_qty int NOT NULL,
     warehouse_id int NOT NULL,
-    status varchar,
     CONSTRAINT fk_warehouse_id FOREIGN KEY (warehouse_id) REFERENCES warehouses (warehouse_id),
     CONSTRAINT fk_item_id FOREIGN KEY (item_id) REFERENCES items (item_id),
     CONSTRAINT fk_order_id FOREIGN KEY (order_id) REFERENCES orders (order_id)
@@ -148,6 +151,7 @@ CREATE TABLE itemsOrders(
 ALTER TABLE itemsOrders ALTER COLUMN pc_qty SET DEFAULT 0;
 ALTER TABLE itemsOrders ALTER COLUMN cs_qty SET DEFAULT 0;
 ALTER TABLE itemsOrders ALTER COLUMN plt_qty SET DEFAULT 0;
+ALTER TABLE itemsOrders ALTER COLUMN status SET DEFAULT 'waiting';
 
 
 DROP TABLE IF EXISTS userTable cascade;
@@ -176,6 +180,54 @@ VALUES
 ('M653WH', 0.55, 180 , 5 , 35),
 ('B500'  , 2.50, 40  , 2 , 16);
 
+
+
+INSERT INTO bins (warehouse_id,is_pick_bin, area, row, rack, shelf_lvl)
+VALUES 
+(1,false, 'A', 1, 1, 1),
+(1,false,  'A', 1, 1, 2),
+(1,false, 'A', 1, 1, 3),
+(1,false, 'A', 1, 2, 1),
+(1,false, 'A', 1, 2, 2),
+(1,false, 'A', 1, 2, 3),
+(1,false, 'B', 1, 1, 1),
+(2,false, 'B', 1, 2, 1),
+(2,false, 'A', 2, 1, 1),
+(2,false, 'A', 2, 1, 2),
+(2,false, 'A', 15, 1, 2),
+(2,false, 'A', 15, 1, 3),
+(1,true, 'A', 3, 3, 1),
+(1,true, 'A', 3, 3, 2),
+(1,true, 'A', 3, 3, 3),
+(1,true, 'A', 3, 1, 1),
+(1,true, 'A', 3, 1, 2),
+(1,true, 'A', 1, 2, 3);
+
+UPDATE bins
+SET name = concat(area, ':', row, ':', rack, ':', shelf_lvl);
+
+
+--Project 2 inserts
+INSERT INTO customers 
+(customer_id, name, email, phone, company, str_address, country, state, zip, city)
+VALUES
+(1,'containerman', 'jimmy@hotmail.com', 1035559999, 'ContainerMen', '140 Man Rd', 'United States', 'Virginia', 33204, 'Manville'),
+(2,'mike', 'mikebun@outlook.com', 1035551212, 'Specialty Food Containers', '403 Bloomburg Way', 'United States', 'North Dakota', 88493, 'Harrison');
+
+
+
+INSERT INTO itemBins(item_id, bin_id, quantity, warehouse_id)
+VALUES
+(1,13,0,1),
+(2,14,0,1),
+(3,15,0,1),
+(4,16,0,1),
+(1,1,1000,1),
+(2,2,2000,1);
+
+INSERT INTO itemsWarehouse(item_id, warehouse_id)
+SELECT item_id, warehouse_id FROM itemBins;
+
 --Insert a row for each item in item table into each warehouse
 DELETE FROM inventory;
 ALTER SEQUENCE inventory_inventory_id_seq RESTART WITH 1;
@@ -186,56 +238,19 @@ INSERT INTO inventory(item_id)
 SELECT item_id FROM items;
 UPDATE inventory SET warehouse_id = 2 WHERE warehouse_id IS NULL;
 
-INSERT INTO bins (warehouse_id,is_pick_bin, area, row, rack, shelf_lvl)
-VALUES 
-(1,false, 'A', 1, 1, 1),
-(1,false,  'A', 1, 1, 2),
-(1,false, 'A', 1, 1, 3),
-(1,false, 'A', 1, 2, 1),
-(1,false, 'A', 1, 2, 2),
-(1,false, 'A', 1, 2, 3),
-(1,false, 'B', 1, 1, 1);
-
-INSERT INTO bins (warehouse_id,is_pick_bin, area, row, rack, shelf_lvl)
-VALUES 
-(2,false, 'B', 1, 2, 1),
-(2,false, 'A', 2, 1, 1),
-(2,false, 'A', 2, 1, 2),
-(2,false, 'A', 15, 1, 2),
-(2,false, 'A', 15, 1, 3);
-
-UPDATE bins
-SET name = concat(area, ':', row, ':', rack, ':', shelf_lvl);
-
-/*
-Project 2
-*/
-INSERT INTO customers 
-(customer_id, name, email, phone, company, str_address, country, state, zip, city)
+--Example orders
+INSERT into orders(order_id,customer_id,start_date)
 VALUES
-(2,'mike', 'mikebun@outlook.com', 1035551212, 'Specialty Food Containers', '403 Bloomburg Way', 'United States', 'North Dakota', 88493, 'Harrison');
-
-INSERT INTO itemsOrders VALUES
-(1,1,1,0,4,0,1),
-(2,2,1,0,1,0,1);
-
-INSERT INTO bins (warehouse_id,is_pick_bin, area, row, rack, shelf_lvl)
-VALUES 
-(1,true, 'A', 3, 3, 1),
-(1,true, 'A', 3, 3, 2),
-(1,true, 'A', 3, 3, 3),
-(1,true, 'A', 3, 1, 1),
-(1,true, 'A', 3, 1, 2),
-(1,true, 'A', 1, 2, 3);
-
-INSERT INTO itemBins(item_id, bin_id, quantity, warehouse_id)
+(1,1,'2020-06-28'),
+(2,2,'2020-07-03'),
+(3,2,'2020-07-04');
+INSERT INTO itemsOrders (items_orders_id,item_id,order_id,pc_qty,cs_qty,plt_qty,warehouse_id)
 VALUES
-(1,13,0,1),
-(2,14,0,1),
-(3,15,0,1),
-(4,16,0,1);
+(1,1,1,0  ,4,3,1),
+(2,2,1,0  ,1,0,1),
+(4,3,3,100,0,4,1),
+(5,1,3,0  ,15,0,1),
+(6,4,3,155,0,0,1);
 
-/*Example orders*/
---order 3
-INSERT into orders values (3,2,'2020-07-04');
-INSERT into itemsorders values (4,3,3,100,0,0,1),(5,1,3,0,15,0,1),(6,4,3,155,0,0,1);
+-- update orders set status = 'waiting';
+-- update itemsorders set status = 'waiting';

@@ -1,17 +1,18 @@
-<p>Displaying first 15 orders</p>
+<p>Displaying first 25 orders</p>
 <!-- For each order make a table -->
-<div id='accordion'>
+<div class='panel-group' id='accordion'>
   <% for(order of orders) { %>
     <% if(order.hasPartial) { %> 
-      <div class="card">
+      <div class="panel panel-default" id='<%= order.order_id %>_card' onclick="document.getElementById('<%= order.order_id %>_lock').style.display = 'inline'">
         <div class='card-header' id='<%= order.order_id %>_heading'>
-          <a  data-toggle="collapse" href="#<%= order.order_id %>_orderToggle" data-target="#<%= order.order_id %>_orderToggle"
-              role="button" aria-expanded="<% if(order.order_id !== 1) {%>false<% } %>" aria-controls="<%= order.order_id %>_heading" >
+          <a  data-toggle="collapse" href="#<%= order.order_id %>_orderToggle" data-parent="#accordion"
+              role="button">
             <div class="<%= order.order_id %>_order"> 
+              <i id='<%= order.order_id %>_lock' class="fa fa-lock" aria-hidden="true" style="float:left;display: none;"></i>
               <span id='<%= order.order_id %>_salesOrder'>Order #<%= order.order_id %></span>
-              <span id='<%= order.order_id %>_priority' style='float: right'>Priority 1</span><br>
-              <span id='<%= order.order_id %>_truck'>YRC</span>
-              <span id='<%= order.order_id %>_need' style='float: right'>Needs pulled: cases</span>
+              <span id='<%= order.order_id %>_priority' style='float: right'>Priority <%= order.priority %></span><br>
+              <span id='<%= order.order_id %>_truck'><%= order.truck %></span>
+              <span id='<%= order.order_id %>_need' style='float: right'>Needs pulled: </span>
             </div>
           </a>
         </div>
@@ -28,7 +29,7 @@
                 </tr>
                 <% for (const lineItem of order.lineItems) { %>
                   <% if(lineItem.invItem) { %>
-                    <tr id='<%= lineItem.invItem.name %>'>
+                    <tr id='<%= order.order_id %>-<%= lineItem.invItem.name %>_row'>
                       <td id='<%= lineItem.invItem.name %>_binInfo'>
                         <span id='<%= lineItem.invItem.name %>_Pri'>
                           Pri: <%= lineItem.invItem.primary_bin %>
@@ -50,7 +51,7 @@
                       <td id='<%= lineItem.invItem.name %>_qty_avail'>
                         <%= lineItem.invItem.qty_avail %>
                         <i class="fa fa-check-circle-o fa-2x" aria-hidden="true"
-                          onclick="">
+                        onclick="updateOrder('<%= order.order_id %>','<%= lineItem.invItem.name %>','<%= lineItem.invItem.item_id %>','<%= lineItem.invItem.case_qty %>')">
                         </i>
                       </td>
                     </tr>
